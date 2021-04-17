@@ -1,4 +1,3 @@
-from torch.functional import atleast_1d
 import torch.nn as nn
 import torch
 
@@ -81,9 +80,9 @@ class Reisdual_block(nn.Module):
 
 class Generator(nn.Module):
 
-    def __init__(self, img_channles, features, total_res_blocks= 5):
+    def __init__(self, img_channels, features, total_res_blocks= 5):
         super(Generator, self).__init__()
-        self.img_channels = img_channles
+        self.img_channels = img_channels
         self.features = features
 
         # Iniitial Block IN --> Conv-->PRelU , K9n64s1
@@ -127,7 +126,7 @@ class Generator(nn.Module):
 
 
 def test():
-    gen = Generator(img_channles=3, features=64, total_res_blocks=5)
+    gen = Generator(img_channels=3, features=64, total_res_blocks=5)
     x = torch.randn((5,3,256,256))
     result = gen(x)
     print(result.shape)

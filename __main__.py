@@ -8,7 +8,7 @@ ToDos:
 - Disriminator:
 - Reading about below:
     -- Pixel shuffle ?
-    -- math.log and math.log2
+    -- math.log and math.log2 
     -- SSIM Structuram Similarity Index
     -- PSNR Peak signal noise ratio
     -- PerceptualLoss
@@ -16,7 +16,6 @@ ToDos:
     -- LRTransformTest
     -- TotalVariationLoss
 """
-
 
 
 
