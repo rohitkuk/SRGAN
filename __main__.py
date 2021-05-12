@@ -7,14 +7,13 @@ ToDos:
     -- Read about PReLU (Parameteric ReLU)
 - Disriminator:
 - Reading about below:
-    -- Pixel shuffle ?
-    -- math.log and math.log2 
-    -- SSIM Structuram Similarity Index
-    -- PSNR Peak signal noise ratio
-    -- PerceptualLoss
+    -- Pixel shuffle ? - Done
+    -- math.log and math.log2 #loge euler natural growth - Done
+    
+    -- SSIM Structuram Similarity Index - Done
+    -- PSNR Peak signal noise ratio- Done 
     -- AvgMeter
-    -- LRTransformTest
-    -- TotalVariationLoss
+    -- Grad Clipping 
 """
 
 

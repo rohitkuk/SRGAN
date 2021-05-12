@@ -50,7 +50,7 @@ class Discriminator(nn.Module):
             nn.Conv2d(512, 1024, kernel_size=1),
             nn.LeakyReLU(),
             nn.Conv2d(1024, 1, kernel_size=1),
-            nn.Sigmoid()
+            # nn.Sigmoid() not needed as BCELogits does simoid
         )   
     def forward(self, x):
         out = self.l1(x)
@@ -68,8 +68,6 @@ class Discriminator(nn.Module):
 
 def test():
     disc = Discriminator(img_channels=3, features=64)
-
-
     x = torch.randn((5,3,256,256))
     result = disc(x)
     print(result.shape)

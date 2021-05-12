@@ -80,7 +80,7 @@ class Reisdual_block(nn.Module):
 
 class Generator(nn.Module):
 
-    def __init__(self, img_channels, features, total_res_blocks= 5):
+    def __init__(self, img_channels, features, total_res_blocks= 16): # forstly it was stated to be 5 but later it is stated to be 16
         super(Generator, self).__init__()
         self.img_channels = img_channels
         self.features = features
