@@ -29,8 +29,10 @@ ToDos:
 from Execute import train
 
 
+
 def main():
-    train.main()
+    for epoch in range(10):
+        train.main()
 
 
 
