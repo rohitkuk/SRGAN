@@ -35,19 +35,19 @@ IMAGE_SHAPE = (1024, 1024)
 # Load the data
 
 train_dataset = SrGanDataset(dir_ = "Dataset/train", mean = NORM_MEAN, std = NORM_STD, hr_shape=IMAGE_SHAPE)
-train_loader = DataLoader(train_dataset, shuffle = True, batch_size = 16)
+train_loader = DataLoader(train_dataset, shuffle = True, batch_size = 8)
 
 
 # Load the Models, Optimizers
 if CHECKPOINT is None:
-    generator = Generator(IMG_CHANNELS, GEN_FEATURE).to(DEVICE)
+    generator_ = Generator(IMG_CHANNELS, GEN_FEATURE).to(DEVICE)
     discriminator = Discriminator(IMG_CHANNELS, DISC_FEATURE).to(DEVICE)
-    gen_optimizer = torch.optim.Adam(generator.parameters(), lr = LEARNING_RATE, betas = (BETA1, BETA2))
+    gen_optimizer = torch.optim.Adam(generator_.parameters(), lr = LEARNING_RATE, betas = (BETA1, BETA2))
     disc_optimizer = torch.optim.Adam(discriminator.parameters(), lr = LEARNING_RATE, betas = (BETA1, BETA2))
 
 
 
-
+# print(discriminator)
 
 # Losses
 truncated_vgg = TruncatedVGG19().to(DEVICE)
@@ -55,23 +55,24 @@ content_loss_criterion = nn.MSELoss().to(DEVICE)
 adverserial_loss_criterion = nn.BCEWithLogitsLoss().to(DEVICE)
 
 truncated_vgg.eval()
-generator.train()
+generator_.train()
 discriminator.train()
 
 # train Function
-epoch = 1 
-loop = tqdm(enumerate(train_loader), leave = False,desc="{}/{}".format(epoch,EPOCHS))
 
 print("Till the train Function")
-def main():
+def main(epoch):
+    loop = tqdm(enumerate(train_loader), leave = False,desc="{}/{}".format(epoch,EPOCHS))
     for batch_idx , (img_lr, img_hr) in loop:
         print("loop Started")
         img_lr, img_hr = img_lr.to(DEVICE), img_hr.to(DEVICE)
         
         # train discrimenator 
         print("Training Discriminator")
+        print(img_lr.shape)
         
-        img_gen = generator(img_lr)
+        img_gen = generator_(img_lr)
+        print(img_gen.shape)
 
         disc_real = discriminator(img_hr)
         disc_gen = discriminator(img_gen)
@@ -88,7 +89,7 @@ def main():
         # train generator
         print("Training Generator Started")
 
-        img_gen = generator(img_lr)
+        img_gen = generator_(img_lr)
         disc_gen = discriminator(img_gen)
 
         # VGG Feature Maps
@@ -101,7 +102,7 @@ def main():
 
         perceptual_loss = content_loss + adverserial_loss * BETA
         
-        generator.zero_grad()
+        generator_.zero_grad()
         perceptual_loss.backward()
         gen_optimizer.step
 
@@ -112,4 +113,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    for epoch in EPOCHS:
+        main(epoch)
