@@ -32,7 +32,7 @@ from Execute import train
 
 def main():
     for epoch in range(10):
-        train.main()
+        train.main(epoch)
 
 
 
