@@ -103,8 +103,8 @@ class Generator(nn.Module):
             activation = "None", batch_norm="Yes" ,kernel_size = 3, stride  = 1, padding=1)
 
         # UP Sampling Blocks
-        self.up_blocks = nn.ModuleList([
-            UpsampleBLock(in_channels=features, up_scale=2,activation='prelu', kernel_size = 3, stride = 1, padding = 1) for _ in range(2)
+        self.up_blocks = nn.Sequential(*[
+            UpsampleBLock(in_channels=self.features, up_scale=2,activation='prelu', kernel_size = 3, stride = 1, padding = 1) for _ in range(2)
         ])
 
         # Final Layer
@@ -112,14 +112,18 @@ class Generator(nn.Module):
             in_channels=self.features, out_channels=self.img_channels, activation="tanh", batch_norm = "No",
             kernel_size = 9, stride = 1, padding = 4                        
                                     )
+
+        self.tan = nn.Tanh()
     def forward(self, x):
         out = self.initial_block(x)
         residual = out
         out = self.residual_blocks(out)
         out = self.after_res_block(out)
-        out = self.final_layer(residual+out)
+        out = out + residual 
+        out = self.up_blocks(out)
+        out = self.final_layer(out)
         # return nn.Tanh(out) #Convention to use Tanh activateion to Generator, some people user (Tanh +1)/2 dont know why but worth trying
-        return (out +1)/2 #Dont know why we do this
+        return self.tan(out) #Dont know why we do this
         
 
 
@@ -127,7 +131,8 @@ class Generator(nn.Module):
 
 def test():
     gen = Generator(img_channels=3, features=64, total_res_blocks=5)
-    x = torch.randn((5,3,256,256))
+    print("Started")
+    x = torch.randn((1,3,256,256))
     result = gen(x)
     print(result.shape)
     pass

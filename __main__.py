@@ -23,6 +23,7 @@ ToDos:
     -- PSNR Peak signal noise ratio- Done 
     -- AvgMeter
     -- Grad Clipping - Not cleared really but will get back to it again.
+    -- Read about TV Loss i.e. Total Variation Loss.
     
 """
 

@@ -35,7 +35,7 @@ IMAGE_SHAPE = (1024, 1024)
 # Load the data
 
 train_dataset = SrGanDataset(dir_ = "Dataset/train", mean = NORM_MEAN, std = NORM_STD, hr_shape=IMAGE_SHAPE)
-train_loader = DataLoader(train_dataset, shuffle = True, batch_size = 8)
+train_loader = DataLoader(train_dataset, shuffle = True, batch_size = 1)
 
 
 # Load the Models, Optimizers
@@ -64,41 +64,31 @@ print("Till the train Function")
 def main(epoch):
     loop = tqdm(enumerate(train_loader), leave = False,desc="{}/{}".format(epoch,EPOCHS))
     for batch_idx , (img_lr, img_hr) in loop:
-        print("loop Started")
-        img_lr, img_hr = img_lr.to(DEVICE), img_hr.to(DEVICE)
-        
+        img_lr, img_hr = img_lr.to(DEVICE), img_hr.to(DEVICE)        
         # train discrimenator 
-        print("Training Discriminator")
-        print(img_lr.shape)
-        
         img_gen = generator_(img_lr)
-        print(img_gen.shape)
 
         disc_real = discriminator(img_hr)
         disc_gen = discriminator(img_gen)
 
         disc_loss_real =  adverserial_loss_criterion(disc_real, torch.ones_like(disc_real))
         disc_loss_gen  = adverserial_loss_criterion(disc_gen, torch.zeros_like(disc_gen))
-        print("Calculating Loss")
-        disc_loss      = (disc_loss_real + disc_loss_gen)//2
+        disc_loss      = (disc_loss_real + disc_loss_gen)
 
         discriminator.zero_grad()
         disc_loss.backward()
         disc_optimizer.step
 
         # train generator
-        print("Training Generator Started")
-
         img_gen = generator_(img_lr)
         disc_gen = discriminator(img_gen)
 
         # VGG Feature Maps
-        print("VGG Started")
 
         img_gen_vgg19 = truncated_vgg(img_gen)
         img_hr_vgg19 = truncated_vgg(img_hr)
         content_loss = content_loss_criterion(img_gen_vgg19, img_hr_vgg19)
-        adverserial_loss = adverserial_loss_criterion(disc_gen, torch.ones_like(img_gen))
+        adverserial_loss = adverserial_loss_criterion(disc_gen, torch.ones_like(disc_gen))
 
         perceptual_loss = content_loss + adverserial_loss * BETA
         
@@ -113,5 +103,5 @@ def main(epoch):
 
 
 if __name__ == "__main__":
-    for epoch in EPOCHS:
+    for epoch in tqdm(EPOCHS):
         main(epoch)
