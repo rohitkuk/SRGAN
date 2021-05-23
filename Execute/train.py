@@ -35,7 +35,7 @@ IMAGE_SHAPE = (1024, 1024)
 # Load the data
 
 train_dataset = SrGanDataset(dir_ = "Dataset/train", mean = NORM_MEAN, std = NORM_STD, hr_shape=IMAGE_SHAPE)
-train_loader = DataLoader(train_dataset, shuffle = True, batch_size = 1)
+train_loader = DataLoader(train_dataset, shuffle = True, batch_size = 8)
 
 
 # Load the Models, Optimizers
